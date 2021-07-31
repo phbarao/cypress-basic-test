@@ -6,10 +6,16 @@ function App() {
   const [toDoList, setToDoList] = useState([]);
   const [inputText, setInputText] = useState("");
 
-  const handleAdd = useCallback(() => {
-    setToDoList([...toDoList, inputText]);
-    setInputText("");
-  }, [toDoList, inputText]);
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      setToDoList([...toDoList, inputText]);
+      setInputText("");
+    },
+
+    [toDoList, inputText]
+  );
 
   const handleInputChange = useCallback((event) => {
     setInputText(event.target.value);
@@ -22,7 +28,7 @@ function App() {
       </header>
 
       <main className="app-content">
-        <form onSubmit={handleAdd} className="app-form">
+        <form onSubmit={handleSubmit} className="app-form">
           <input
             data-cy="input-to-do"
             className="app-input"
@@ -38,11 +44,14 @@ function App() {
         </form>
 
         <ul className="app-list">
-          {toDoList.map((toDo) => (
-            <li data-cy="to-do-row" id={toDo} className="to-do-item">
-              {toDo}
-            </li>
-          ))}
+          {toDoList &&
+            toDoList.map((toDo) => {
+              return (
+                <li data-cy="to-do-row" id={toDo} className="to-do-item">
+                  {toDo}
+                </li>
+              );
+            })}
         </ul>
       </main>
     </div>
