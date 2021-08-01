@@ -6,9 +6,13 @@ function App() {
   const [toDoList, setToDoList] = useState([]);
   const [inputText, setInputText] = useState("");
 
+  const listSize = useMemo(() => toDoList.length, [toDoList]);
+
   const handleAdd = useCallback(() => {
     if (toDoList.includes(inputText)) {
       alert("Tarefa já incluída");
+    } else if (inputText === "") {
+      alert("Digite um valor válido");
     } else {
       setToDoList([...toDoList, inputText]);
     }
@@ -17,8 +21,6 @@ function App() {
   const handleInput = useCallback((event) => {
     setInputText(event.target.value);
   });
-
-  const listSize = useMemo(() => toDoList.length, [toDoList]);
 
   useEffect(() => {
     const storage = localStorage.getItem("to-do");

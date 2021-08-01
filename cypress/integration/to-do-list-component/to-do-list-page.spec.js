@@ -1,5 +1,4 @@
 describe("To Do List UI", () => {
-  // Check if title is correct
   it("Should return true when title component is correct", () => {
     cy.visit("/");
 
