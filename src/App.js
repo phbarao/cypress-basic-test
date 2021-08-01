@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useEffect, useState } from "react";
 
 import "./App.css";
 
@@ -7,13 +7,32 @@ function App() {
   const [inputText, setInputText] = useState("");
 
   const handleAdd = useCallback(() => {
-    setToDoList([...toDoList, inputText]);
-    setInputText("");
-  }, [toDoList, inputText]);
+    if (toDoList.includes(inputText)) {
+      alert("Tarefa já incluída");
+    } else {
+      setToDoList([...toDoList, inputText]);
+    }
+  }, [inputText, toDoList]);
 
-  const handleInputChange = useCallback((event) => {
+  const handleInput = useCallback((event) => {
     setInputText(event.target.value);
+  });
+
+  const listSize = useMemo(() => toDoList.length, [toDoList]);
+
+  useEffect(() => {
+    const storage = localStorage.getItem("to-do");
+
+    if (storage) {
+      setToDoList(JSON.parse(storage));
+    }
+
+    return () => {};
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("to-do", JSON.stringify(toDoList));
+  }, [toDoList]);
 
   return (
     <div className="container">
@@ -27,7 +46,7 @@ function App() {
             data-cy="input-to-do"
             className="app-input"
             placeholder="Digite um novo To Do:"
-            onChange={handleInputChange}
+            onChange={handleInput}
             type="text"
             value={inputText}
           />
@@ -37,9 +56,11 @@ function App() {
           </button>
         </form>
 
+        <h1>{listSize}</h1>
+
         <ul className="app-list">
           {toDoList.map((toDo) => (
-            <li data-cy="to-do-row" id={toDo} className="to-do-item">
+            <li data-cy="to-do-row" key={toDo} className="to-do-item">
               {toDo}
             </li>
           ))}
